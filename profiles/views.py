@@ -1,4 +1,5 @@
 from django.db.models import Count
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, filters
 from react_api.permissions import IsOwnerOrReadOnly
 from .models import Profile
@@ -11,13 +12,18 @@ class ProfileList(generics.ListAPIView):
     No create view as profile creation is handled by django signals.
     """
     queryset = Profile.objects.annotate(
-        posts_count = Count("owner__post", distinct=True),
+        posts_count=Count("owner__post", distinct=True),
         followers_count=Count("owner__followed", distinct=True),
         following_count=Count("owner__following", distinct=True)
     ).order_by("-created_at")
     serializer_class = ProfileSerializer
     filter_backends = [
-        filters.OrderingFilter
+        filters.OrderingFilter,
+        filters.SearchFilter,
+        DjangoFilterBackend()
+    ]
+    filterset_fields = [
+        "owner__following__followed__profile"
     ]
     ordering_fields = [
         "posts_count",
