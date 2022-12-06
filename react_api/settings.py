@@ -83,6 +83,8 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
     CORS_ALLOWED_ORIGIN_REGEXES = [
         rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
     ]
+CORS_ALLOW_CREDENTIALS = True
+
 ROOT_URLCONF = 'react_api.urls'
 
 TEMPLATES = [
@@ -118,7 +120,7 @@ else:
     DATABASES = {
         'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
     }
-    print("connected!")
+
 
 
 # Password validation
